@@ -7,6 +7,12 @@ var logger = require('morgan');
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 
+var mongoose = require('mongoose');
+var mongoDB = 'mongodb+srv://stangerp:pbv5maB2hqm5IGj1@musichub.bq2gg.mongodb.net/MusicHub?retryWrites=true&w=majority';
+mongoose.connect(mongoDB, { useNewUrlParser: true , useUnifiedTopology: true });
+var db = mongoose.connection;
+db.on('error', console.error.bind(console, 'MongoDB connection error:'));
+
 var app = express();
 
 // view engine setup
