@@ -1,17 +1,31 @@
-extends layout
-
-block content
-  h1= title
-  p Welcome to #{title}!
-  script.
-    var f1 = function() { document.getElementById('myImage').src='#{data.item1}' }
-  script.
-    var f2 = function() { document.getElementById('myImage').src='#{data.item2}' }
-  script.
-    var f3 = function() { document.getElementById('myImage').src='#{data.item3}' }
-
-  button(onclick='f1()') One!
-  button(onclick='f2()') Two!
-  button(onclick='f3()') Three!
-  p
-  a: img(id='myImage' height='300' width='300' src='')
+doctype html
+html(lang='en')
+  
+  head
+    meta(charset='UTF-8')
+    meta(name='viewport' content='width=device-width, initial-scale=1.0')
+    title MusicHub
+    link(rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css' integrity='sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm' crossorigin='anonymous')
+  
+  body
+    .container
+      form(action='')
+        input#hidden_token(type='hidden')
+        .col-sm-6.form-group.row.mt-4.px-0
+          label.form-label.col-sm-2(for='Genre') Genre:
+          select#select_genre.form-control.form-control-sm.col-sm-10(name='')
+            option Select...
+        .col-sm-6.form-group.row.px-0
+          label.form-label.col-sm-2(for='Genre') Playlists:
+          select#select_playlist.form-control.form-control-sm.col-sm-10(name='')
+            option Select...
+        .col-sm-6.row.form-group.px-0
+          button#btn_submit.btn.btn-success.col-sm-12(type='submit') Search
+      .row
+        .col-sm-6.px-0
+          .list-group.song-list
+        #song-detail.offset-md-1.col-sm-4
+    script(src='https://code.jquery.com/jquery-3.2.1.slim.min.js' integrity='sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN' crossorigin='anonymous')
+    script(src='https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js' integrity='sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q' crossorigin='anonymous')
+    script(src='https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js' integrity='sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl' crossorigin='anonymous')
+    script(src='app.mjs' type='text/javascript')
