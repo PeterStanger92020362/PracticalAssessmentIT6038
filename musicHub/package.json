@@ -10,6 +10,7 @@
   "dependencies": {
     "app": "^0.1.0",
     "async": "^3.2.3",
+    "axios": "^0.26.1",
     "cookie-parser": "~1.4.4",
     "debug": "~2.6.9",
     "domino": "^2.1.6",
@@ -20,6 +21,7 @@
     "morgan": "~1.9.1",
     "node-fetch": "^2.6.7",
     "pug": "^3.0.2",
+    "querystring": "^0.2.1",
     "url": "^0.11.0"
   },
   "devDependencies": {
