@@ -10,9 +10,21 @@ const CLIENT_ID = process.env.CLIENT_ID;
 const CLIENT_SECRET = process.env.CLIENT_SECRET;
 const REDIRECT_URI = process.env.REDIRECT_URI;
 
+function App() {
+  useEffect(() => {
+    const queryString = window.location.search;
+    const urlParams = URLSearchParams(queryString);
+    const accessToken = urlParams.get('access_token');
+    const refreshToken = urlParams.get('refresh_token');
+  })};
+
+
+
+
 /* GET home page. */
 app.get('/', (req, res) => {
   res.render('index', { title: 'MusicHub' });
+  console.log(accessToken)
 });
 
 /**
@@ -69,22 +81,20 @@ app.get('/callback', (req, res) => {
     .then(response => {
       if (response.status === 200) {
 
-        const { access_token, token_type } = response.data;
+        const { access_token, refresh_token } = response.data;
 
-        axios.get('https://api.spotify.com/v1/me', {
-          headers: {
-            Authorization: `${token_type} ${access_token}`
-            }
-          })
-          .then(response => {
-            res.send(`<pre>${JSON.stringify(response.data, null, 2)}</pre>`);
-          })
-          .catch(error => {
-            res.send(error);
-          });
+        const queryParams = querystring.stringify({
+          access_token,
+          refresh_token
+        });
+
+        // redirect to the main page
+        res.redirect(`http://localhost:3000/?${queryParams}`)
+
+        // pass along the access token and refresh token
         
       } else {
-        res.send(response);
+        res.redirect(`/?${querystring.stringify({ error: 'invalid_token' })}`);
       }
     })
     .catch(error => {
