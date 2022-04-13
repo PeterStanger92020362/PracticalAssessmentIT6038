@@ -5,26 +5,17 @@ const app = express();
 const axios = require('axios');
 
 const querystring = require('querystring');
+const { access } = require('fs');
 
 const CLIENT_ID = process.env.CLIENT_ID;
 const CLIENT_SECRET = process.env.CLIENT_SECRET;
 const REDIRECT_URI = process.env.REDIRECT_URI;
 
-function App() {
-  useEffect(() => {
-    const queryString = window.location.search;
-    const urlParams = URLSearchParams(queryString);
-    const accessToken = urlParams.get('access_token');
-    const refreshToken = urlParams.get('refresh_token');
-  })};
-
-
-
 
 /* GET home page. */
 app.get('/', (req, res) => {
   res.render('index', { title: 'MusicHub' });
-  console.log(accessToken)
+
 });
 
 /**
@@ -59,7 +50,6 @@ app.get('/login', (req, res) => {
   })
 
   res.redirect(`https://accounts.spotify.com/authorize?${queryParms}`);
-  //res.redirect('https://accounts.spotify.com/authorize?client_id=' + CLIENT_ID + '&response_type=code&redirect_uri=' + REDIRECT_URI + '&show_dialog=true');
 })
 
 app.get('/callback', (req, res) => {
