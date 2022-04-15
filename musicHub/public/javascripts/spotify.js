@@ -1,17 +1,114 @@
+//const axios = require('axios');
+
+const LOCALSTORAGE_KEYS = {
+    accessToken: 'spotify_access_token',
+    refreshToken: 'spotify_refresh_token',
+    expireTime: 'spotify_token_expire_time',
+    timestamp: 'spotify_token_timestamp',
+};
+
+const LOCALSTORAGE_VALUES = {
+    accessToken: window.localStorage.getItem(LOCALSTORAGE_KEYS.accessToken),
+    refreshToken: window.localStorage.getItem(LOCALSTORAGE_KEYS.refreshToken),
+    expireTime: window.localStorage.getItem(LOCALSTORAGE_KEYS.expireTime),
+    timestamp: window.localStorage.getItem(LOCALSTORAGE_KEYS.timestamp),
+};
+
+
+/**
+ * clear out all localstorage items we've set and reload the page
+ * @returns {void}
+ */
+
+const logout = () => {
+    //Clear all localstorage items
+    for (const property in LOCALSTORAGE_KEYS) {
+        window.localStorage.removeItem(LOCALSTORAGE_KEYS[property]);
+    }
+    //Navigate to home page
+    window.location = window.location.origin;
+};
+
+const hasTokenExpired = () => {
+    const { accessToken, timestamp, expireTime } = LOCALSTORAGE_VALUES;
+    if (!accessToken || !timestamp) {
+        return false;
+    }
+    const millisecondsElapsed = Date.now() - Number(timestamp);
+    return (millisecondsElapsed / 1000) > Number(expireTime);
+};
+
+const refreshToken = async () => {
+    try {
+        // Logout if there's no refresh token stored or if stuck in reload loop
+        if (!LOCALSTORAGE_VALUES.refreshToken || LOCALSTORAGE_VALUES.refreshToken === 'undefined' || (Date.now() - Number(LOCALSTORAGE_VALUES.timestamp) / 1000) < 1000)
+        {
+            console.error('No refresh token available');
+            logout();
+        }
+
+        // Use `/refresh_token` endpoint 
+        const { data } = await axios.get(`/refresh_token?refresh_token=${LOCALSTORAGE_VALUES.refreshToken}`);
+
+        // Update localStorage values
+        window.localStorage.setItem(LOCALSTORAGE_KEYS.accessToken, data.access_token);
+        window.localStorage.setItem(LOCALSTORAGE_KEYS.timestamp, Date.now());
+
+        // Reload page
+        window.location.reload();
+
+    } catch (e) {
+        console.error(e);
+    }
+};
+
+
+/**
+ * 
+ * @returns {string} A Spotify access token.
+ */
+
 const getAccessToken = () => {
-    const urlParams = (new URL(document.location)).searchParams;
+    const urlParams = (new URL(window.location)).searchParams;
     const accessToken = urlParams.get('access_token');
     const refreshToken = urlParams.get('refresh_token');
 
-    return accessToken;
+    const queryParams = {
+        [LOCALSTORAGE_KEYS.accessToken]: urlParams.get('access_token'),
+        [LOCALSTORAGE_KEYS.refreshToken]: urlParams.get('refresh_token'),
+        [LOCALSTORAGE_KEYS.expireTime]: urlParams.get('expires_in'),
+    };
+
+    const hasError = urlParams.get('error');
+
+    // If there is an error OR the token in localStorage has expired, refresh the token
+
+    if (hasError || hasTokenExpired() || LOCALSTORAGE_VALUES.accessToken === 'undefined') {
+        refreshToken();
+    }
+
+    // If there is a valid access token in localStorage, us that
+    if (LOCALSTORAGE_VALUES.accessToken && LOCALSTORAGE_VALUES.accessToken !== 'undefined') {
+        return LOCALSTORAGE_VALUES.accessToken;
+    }
+
+    // If there is a token in the URL query params, user is logging in for the first time
+    if (queryParams[LOCALSTORAGE_KEYS.accessToken]){
+        // Store the query params in localStorage
+        for (const property in queryParams) {
+            window.localStorage.setItem(property, queryParams[property]);
+            //if (queryParams.hasOwnProperty(property)) {
+            //    window.localStorage.setItem(property, queryParams[property]);
+            //}
+        }
+        window.localStorage.setItem(LOCALSTORAGE_KEYS.timestamp, Date.now());
+        // Return access token from query params
+        return queryParams[LOCALSTORAGE_KEYS.accessToken];
+    }
+
+    return false;
+    
 };
 
 const accessToken = getAccessToken();
 console.log(accessToken);
-
-//const urlParams = (new URL(document.location)).searchParams;
-//const accessToken = urlParams.get('access_token');
-//const refreshToken = urlParams.get('refresh_token');
-
-//console.log("Access Token: " + accessToken);
-//console.log("Refresh Token: " + refreshToken);
