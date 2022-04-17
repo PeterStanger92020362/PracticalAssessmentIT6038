@@ -80,7 +80,7 @@ app.get('/callback', (req, res) => {
         });
 
         // redirect to the main page
-        res.redirect(`http://localhost:3000/?${queryParams}`)
+        res.redirect(`/?${queryParams}`)
 
         // pass along the access token and refresh token
         

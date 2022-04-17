@@ -1,4 +1,4 @@
-//const axios = require('axios');
+const { default: axios } = require("axios");
 
 const LOCALSTORAGE_KEYS = {
     accessToken: 'spotify_access_token',
@@ -97,13 +97,14 @@ const getAccessToken = () => {
         // Store the query params in localStorage
         for (const property in queryParams) {
             window.localStorage.setItem(property, queryParams[property]);
-            //if (queryParams.hasOwnProperty(property)) {
-            //    window.localStorage.setItem(property, queryParams[property]);
-            //}
+
         }
         window.localStorage.setItem(LOCALSTORAGE_KEYS.timestamp, Date.now());
+        
         // Return access token from query params
         return queryParams[LOCALSTORAGE_KEYS.accessToken];
+        
+
     }
 
     return false;
@@ -111,4 +112,14 @@ const getAccessToken = () => {
 };
 
 const accessToken = getAccessToken();
-console.log(accessToken);
+console.log("Access Token: \n" + LOCALSTORAGE_VALUES.accessToken);
+console.log("Refresh Token: \n" + LOCALSTORAGE_VALUES.refreshToken);
+
+/**
+* Axios global request headers
+* https://github.com/axios/axios#global-axios-defaults
+ */
+axios.defaults.baseURL = 'https://api.spotify.com/v1';
+axios.defaults.headers['Authorization'] = `Bearer ${accessToken}`;
+axios.defaults.headers['Content-Type'] = 'application/json';
+
