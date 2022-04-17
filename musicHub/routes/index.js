@@ -7,6 +7,7 @@ const axios = require('axios');
 const querystring = require('querystring');
 const { access } = require('fs');
 
+
 const CLIENT_ID = process.env.CLIENT_ID;
 const CLIENT_SECRET = process.env.CLIENT_SECRET;
 const REDIRECT_URI = process.env.REDIRECT_URI;
@@ -17,6 +18,7 @@ app.get('/', (req, res) => {
   res.render('index', { title: 'MusicHub' });
 
 });
+
 
 /**
  * Generates a random string containing numbers and letters
@@ -115,6 +117,20 @@ app.get('/refresh_token', (req, res) => {
       res.send(error);
     });
 });
+
+
+const fetchData = async () => {
+  try {
+    const { data } = await getCurrentUserProfile();
+    setProfile(data);
+
+    console.log(data);
+  } catch(e) {
+    console.error(e);
+  }
+}
+
+
 
 
 module.exports = app;

@@ -1,4 +1,4 @@
-const { default: axios } = require("axios");
+const axios = require('axios')
 
 const LOCALSTORAGE_KEYS = {
     accessToken: 'spotify_access_token',
@@ -115,6 +115,7 @@ const accessToken = getAccessToken();
 console.log("Access Token: \n" + LOCALSTORAGE_VALUES.accessToken);
 console.log("Refresh Token: \n" + LOCALSTORAGE_VALUES.refreshToken);
 
+
 /**
 * Axios global request headers
 * https://github.com/axios/axios#global-axios-defaults
@@ -123,3 +124,11 @@ axios.defaults.baseURL = 'https://api.spotify.com/v1';
 axios.defaults.headers['Authorization'] = `Bearer ${accessToken}`;
 axios.defaults.headers['Content-Type'] = 'application/json';
 
+
+/**
+ * Get Current User's Profile
+ * https://developer.spotify.com/documentation/web-api/reference/users-profile/get-current-users-profile/
+ * @returns {promise}
+ */
+
+const getCurrentUserProfile = () => axios.get('/me');
